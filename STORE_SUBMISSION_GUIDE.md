@@ -8,10 +8,16 @@ Microsoft Store（パートナーセンター）で新規アプリ登録を行�
 ## 1. アプリの基本情報 (Product Details)
 
 - **アプリ名 (Title)**: `時間逆転スタジオ - Time Reversal Studio Pro`
+- **開発者 / 著作権表記 (Copyright)**: `© youyouboydragon_studio`
+- **プライバシーポリシー URL (Privacy Policy URL)**: `https://youyouboydragonofficial.github.io/time-reversal-studio-pro/privacy.html`
+- **公式サイト / サポート URL**: `https://github.com/youyouboydragonOfficial/time-reversal-studio-pro`
 - **プライマリ カテゴリ**: 写真 & ビデオ (Photo & video)
 - **セカンダリ カテゴリ**: ユーティリティ & ツール (Utilities & tools)
 - **価格設定**: **無料 (Free)** （※追加費用・月額・配布手数料は一切かかりません）
 - **対象デバイス**: PC (Windows 10 / 11 64-bit)
+- **Win32アプリ(.exe)直接申請用インストーラーURL (v1.4.0)**:
+  `https://github.com/youyouboydragonOfficial/time-reversal-studio-pro/releases/download/v1.4.0/Time-Reversal-Studio-Pro-Setup-v1.4.0.exe`
+  *(サイレントインストール引数: `/S`)*
 
 ---
 
