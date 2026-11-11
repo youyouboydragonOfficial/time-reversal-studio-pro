@@ -22,7 +22,7 @@
         <span class="brand-title">時間逆転スタジオ</span>
         <span class="brand-subtitle">TIME REVERSAL STUDIO PRO</span>
       </div>
-      <span class="pro-chip">STUDIO v1.2</span>
+      <span class="pro-chip">STUDIO v1.3</span>
     </div>
 
     <div class="telemetry-bar">
@@ -140,29 +140,41 @@
             <div class="turbo-tile active" data-workers="1">
               <div class="tile-radio-mark"></div>
               <div class="tile-info">
-                <span class="tile-name">🛡️ 通常セーフ (1スレッド)</span>
-                <span class="tile-sub">RAM 150MB以下固定・100%安全</span>
+                <div class="tile-name-row">
+                  <span class="tile-name">🛡️ 通常セーフ (1スレッド)</span>
+                  <span class="tile-badge badge-safe">LV.0 安全</span>
+                </div>
+                <span class="tile-sub">RAM 150MB以下固定・ノートPC100%安全</span>
               </div>
             </div>
-            <div class="turbo-tile warning-tile" data-workers="2">
+            <div class="turbo-tile warning-tile warning-tile-light" data-workers="2">
               <div class="tile-radio-mark"></div>
               <div class="tile-info">
-                <span class="tile-name">⚡ 2並列ターボ (約2倍速)</span>
-                <span class="tile-sub">6コア以上CPU / GPU向け</span>
+                <div class="tile-name-row">
+                  <span class="tile-name">⚡ 2並列ターボ (約2倍速)</span>
+                  <span class="tile-badge badge-light">LV.1 軽度</span>
+                </div>
+                <span class="tile-sub">一般ノートPC向け・負荷30〜55%</span>
               </div>
             </div>
-            <div class="turbo-tile warning-tile" data-workers="4">
+            <div class="turbo-tile warning-tile warning-tile-medium" data-workers="4">
               <div class="tile-radio-mark"></div>
               <div class="tile-info">
-                <span class="tile-name">🔥 ゲーミング 4並列 (約3〜4倍速)</span>
-                <span class="tile-sub">RTX / Radeon搭載PC特化</span>
+                <div class="tile-name-row">
+                  <span class="tile-name">🔥 ゲーミング 4並列 (約3〜4倍速)</span>
+                  <span class="tile-badge badge-medium">LV.2 中高負荷</span>
+                </div>
+                <span class="tile-sub">ゲーミングPC推奨・薄型ノート発熱注意</span>
               </div>
             </div>
-            <div class="turbo-tile warning-tile" data-workers="8">
+            <div class="turbo-tile warning-tile warning-tile-extreme" data-workers="8">
               <div class="tile-radio-mark"></div>
               <div class="tile-info">
-                <span class="tile-name">🚀 極限 8並列 (爆速)</span>
-                <span class="tile-sub">12〜16コア以上ハイエンド向け</span>
+                <div class="tile-name-row">
+                  <span class="tile-name">🚀 極限 8並列 (爆速)</span>
+                  <span class="tile-badge badge-extreme">LV.3 限界超負荷</span>
+                </div>
+                <span class="tile-sub">ハイエンド専用・薄型ノート厳禁</span>
               </div>
             </div>
           </div>
@@ -356,29 +368,53 @@
     </div>
   </footer>
 
-  <!-- High-Load Warning Modal -->
+  <!-- High-Load Warning Modal (Dynamic per Load Level) -->
   <div class="modal-backdrop" id="warningModal" style="display: none;">
-    <div class="warning-modal-box">
-      <div class="modal-banner">
-        <span class="modal-warn-icon">⚠️</span>
+    <div class="warning-modal-box level-medium" id="modalBox">
+      <div class="modal-banner" id="modalBanner">
+        <span class="modal-warn-icon" id="modalWarnIcon">⚠️</span>
         <div class="banner-text">
-          <h3>高負荷並列ターボモードの警告</h3>
-          <span class="banner-sub">HIGH LOAD MULTI-THREAD WARNING</span>
+          <div class="banner-header-row">
+            <h3 id="modalTitle">高負荷並列ターボモードの警告</h3>
+            <span class="modal-level-pill" id="modalLevelPill">LV.2 ゲーミング中高負荷</span>
+          </div>
+          <span class="banner-sub" id="modalSubTitle">HIGH LOAD MULTI-THREAD WARNING</span>
         </div>
       </div>
       <div class="modal-content">
-        <p class="modal-p">
-          選択された<strong>「並列ターボモード (<span id="modalWorkerCount">4</span>スレッド並列)」</strong>は、高性能なGPUやマルチコアCPUを搭載したゲーミングPC・デスクトップ向けの機能です。
+        <p class="modal-p" id="modalDesc">
+          選択された<strong>「並列ターボモード (<span id="modalWorkerCount">4</span>スレッド並列)」</strong>の負荷特性と注意事項です。
         </p>
-        <div class="modal-box-alert">
-          <div class="alert-line">🔥 <strong>CPU/GPU使用率</strong>: 最大100%まで上昇し、ファン回転数と発熱が増加します。</div>
-          <div class="alert-line">⚡ <strong>電力消費</strong>: ノートPCをお使いの場合はACアダプターの接続が必須です。</div>
-          <div class="alert-line">🧠 <strong>メモリ使用量</strong>: 並列数に応じてRAM消費量が増加します（2並列: 約300MB、4並列: 約600MB）。</div>
-          <div class="alert-line">⚠️ 冷却環境が不十分な薄型ノートPCではサーマルスロットリング（保護減速）が起きる場合があります。</div>
+
+        <!-- Dynamic Specs Grid -->
+        <div class="modal-spec-grid">
+          <div class="spec-cell">
+            <span class="spec-label">🖥️ 想定動作環境</span>
+            <span class="spec-val" id="modalTargetPC">ゲーミングPC / 6〜8コア以上</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-label">⚡ CPU/GPU想定負荷</span>
+            <span class="spec-val highlight" id="modalCpuLoad">60% 〜 85%</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-label">🧠 推定メモリ消費</span>
+            <span class="spec-val" id="modalRamEst">約 500MB 〜 900MB</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-label">🌪️ ファン＆発熱予測</span>
+            <span class="spec-val" id="modalThermalFan">高速回転・温風</span>
+          </div>
         </div>
+
+        <div class="modal-box-alert" id="modalAlertBox">
+          <div class="alert-line" id="modalBatteryLine">⚡ <strong>電源接続</strong>: ACアダプターの接続が必須です。</div>
+          <div class="alert-line" id="modalMultitaskLine">💼 <strong>他ソフトへの影響</strong>: 処理中はゲームや重いソフトを閉じてください。</div>
+          <div class="alert-line danger-line" id="modalAdviceLine">⚠️ <strong>薄型・非ゲーミングノートPCへの注意</strong>: 放熱が追いつかずサーマルスロットリングで減速する可能性があります。</div>
+        </div>
+
         <label class="agree-checkbox-label">
           <input type="checkbox" id="chkAgreeWarning">
-          <span>上記のリスクと負荷を理解した上で、高負荷ターボモードを有効にする</span>
+          <span id="modalAgreeText">上記のリスクと負荷特性を理解した上で、この並列モードを有効化する</span>
         </label>
       </div>
       <div class="modal-foot">

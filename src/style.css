@@ -647,6 +647,85 @@ body {
   box-shadow: 0 0 8px var(--amber-main);
 }
 
+.tile-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.tile-badge {
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+.badge-safe {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-light {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.badge-medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-extreme {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
+}
+
+.turbo-tile.active.warning-tile-light {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: #38bdf8;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+}
+.turbo-tile.active.warning-tile-light .tile-radio-mark {
+  border-color: #38bdf8;
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+}
+
+.turbo-tile.active.warning-tile-medium {
+  background: rgba(245, 158, 11, 0.14);
+  border-color: #f59e0b;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.3);
+}
+.turbo-tile.active.warning-tile-medium .tile-radio-mark {
+  border-color: #f59e0b;
+  background: #f59e0b;
+  box-shadow: 0 0 8px #f59e0b;
+}
+
+.turbo-tile.active.warning-tile-extreme {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: #ef4444;
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.4);
+  animation: extremeTilePulse 2s infinite ease-in-out;
+}
+.turbo-tile.active.warning-tile-extreme .tile-radio-mark {
+  border-color: #ef4444;
+  background: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+@keyframes extremeTilePulse {
+  0%, 100% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.3); }
+  50% { box-shadow: 0 0 24px rgba(239, 68, 68, 0.6); }
+}
+
 .tile-info {
   display: flex;
   flex-direction: column;
@@ -1161,10 +1240,159 @@ body {
   font-size: 26px;
 }
 
-.banner-text h3 {
-  font-size: 14px;
+/* Dynamic Level-based Modal Themes */
+.banner-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-level-pill {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+
+/* Level 1: Light */
+.warning-modal-box.level-light {
+  border-color: #38bdf8;
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.3);
+}
+.warning-modal-box.level-light .modal-banner {
+  background: rgba(56, 189, 248, 0.15);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+}
+.warning-modal-box.level-light .banner-text h3 {
+  color: #38bdf8;
+}
+.warning-modal-box.level-light .modal-level-pill {
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+}
+.warning-modal-box.level-light .agree-checkbox-label {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.3);
+}
+.warning-modal-box.level-light .agree-checkbox-label input {
+  accent-color: #38bdf8;
+}
+.warning-modal-box.level-light .btn-warn-confirm {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+}
+
+/* Level 2: Medium */
+.warning-modal-box.level-medium {
+  border-color: #f59e0b;
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.35);
+}
+.warning-modal-box.level-medium .modal-banner {
+  background: rgba(245, 158, 11, 0.15);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+}
+.warning-modal-box.level-medium .banner-text h3 {
   color: #fbbf24;
+}
+.warning-modal-box.level-medium .modal-level-pill {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #f59e0b;
+  color: #fbbf24;
+}
+.warning-modal-box.level-medium .agree-checkbox-label {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.warning-modal-box.level-medium .agree-checkbox-label input {
+  accent-color: #f59e0b;
+}
+.warning-modal-box.level-medium .btn-warn-confirm {
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+}
+
+/* Level 3: Extreme */
+.warning-modal-box.level-extreme {
+  border-color: #ef4444;
+  box-shadow: 0 0 50px rgba(239, 68, 68, 0.45);
+  animation: modalRedGlow 2.5s infinite alternate ease-in-out;
+}
+@keyframes modalRedGlow {
+  0% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.35); }
+  100% { box-shadow: 0 0 55px rgba(239, 68, 68, 0.65); }
+}
+.warning-modal-box.level-extreme .modal-banner {
+  background: rgba(239, 68, 68, 0.2);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.4);
+}
+.warning-modal-box.level-extreme .banner-text h3 {
+  color: #f87171;
+}
+.warning-modal-box.level-extreme .modal-level-pill {
+  background: rgba(239, 68, 68, 0.25);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+}
+.warning-modal-box.level-extreme .agree-checkbox-label {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+.warning-modal-box.level-extreme .agree-checkbox-label input {
+  accent-color: #ef4444;
+}
+.warning-modal-box.level-extreme .btn-warn-confirm {
+  background: linear-gradient(135deg, #b91c1c, #ef4444);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Modal Spec Grid */
+.modal-spec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.spec-cell {
+  background: rgba(18, 24, 38, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.spec-label {
+  font-size: 10px;
+  color: var(--text-muted);
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.spec-val {
+  font-size: 12px;
+  color: var(--text-pure);
+  font-weight: 600;
+}
+
+.spec-val.highlight {
+  color: #facc15;
+  font-family: monospace;
+}
+
+.alert-line.danger-line {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid #ef4444;
+  padding: 6px 10px;
+  border-radius: 4px;
+  color: #fca5a5;
+}
+.alert-line.danger-line strong {
+  color: #f87171;
 }
 
 .banner-sub {

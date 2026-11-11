@@ -144,7 +144,13 @@ class ReversalEngine {
       throw new Error('動画の長さが取得できませんでした。');
     }
 
-    const totalChunks = Math.ceil(duration / chunkDuration);
+    // Smart chunk duration scaling:
+    // If video is short compared to concurrency, adapt chunk duration so ALL workers run simultaneously!
+    let effectiveChunkDuration = chunkDuration;
+    if (concurrency > 1 && duration < chunkDuration * concurrency) {
+      effectiveChunkDuration = Math.max(2, Math.floor(duration / concurrency));
+    }
+    const totalChunks = Math.ceil(duration / effectiveChunkDuration);
     const tempDir = path.join(os.tmpdir(), 'chronoreverse_' + Date.now());
     this.currentTempDir = tempDir;
     fs.mkdirSync(tempDir, { recursive: true });
@@ -206,7 +212,10 @@ class ReversalEngine {
         elapsedTime: this.formatTime(elapsedSec),
         remainingTime: this.formatTime(estRemainingSec),
         speedMultiplier: `${speedMultiplier}x`,
-        ramUsageMB: Math.round(process.memoryUsage().rss / 1024 / 1024)
+        ramUsageMB: Math.round(process.memoryUsage().rss / 1024 / 1024),
+        systemRamUsedMB: Math.round((os.totalmem() - os.freemem()) / (1024 * 1024)),
+        systemRamTotalMB: Math.round(os.totalmem() / (1024 * 1024)),
+        activeWorkers: Math.max(1, chunkProgressMap.size)
       });
     };
 
@@ -214,8 +223,8 @@ class ReversalEngine {
     const processChunk = async (i) => {
       if (this.isCancelled) throw new Error('CANCELED');
 
-      const chunkStart = i * chunkDuration;
-      const actualChunkDuration = Math.min(chunkDuration, duration - chunkStart);
+      const chunkStart = i * effectiveChunkDuration;
+      const actualChunkDuration = Math.min(effectiveChunkDuration, duration - chunkStart);
       const chunkOut = path.join(tempDir, `chunk_${String(i).padStart(5, '0')}.mp4`);
       chunkFiles[i] = chunkOut;
 
@@ -247,6 +256,7 @@ class ReversalEngine {
 
       ffmpegArgs.push('-c:v', encoder);
       if (encoder === 'libx264') {
+        ffmpegArgs.push('-threads', '0'); // Utilize all CPU threads fully
         ffmpegArgs.push('-preset', quality === 'ultra' ? 'medium' : 'veryfast');
       }
       ffmpegArgs.push(...videoBitrateArgs);
