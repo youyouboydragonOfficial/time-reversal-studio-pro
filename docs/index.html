@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>プライバシーポリシー | 時間逆転スタジオ - Time Reversal Studio Pro</title>
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --card-bg: #0d121d;
+      --card-border: rgba(6, 182, 212, 0.25);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --cyan: #06b6d4;
+      --cyan-bright: #38bdf8;
+      --green: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.7;
+      padding: 40px 20px 80px;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .app-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.4);
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #ffffff 40%, var(--cyan-bright) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--cyan);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .badge-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: var(--cyan-bright);
+    }
+
+    .badge-green {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: var(--green);
+    }
+
+    .policy-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .policy-section {
+      margin-bottom: 28px;
+    }
+
+    .policy-section:last-child {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--cyan-bright);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 12px;
+    }
+
+    li {
+      color: var(--text-muted);
+      font-size: 14px;
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 6px;
+    }
+
+    li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: var(--green);
+      font-weight: bold;
+    }
+
+    .highlight-box {
+      background: rgba(6, 182, 212, 0.08);
+      border-left: 4px solid var(--cyan-bright);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+
+    .highlight-box p {
+      color: #e2e8f0;
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .footer a {
+      color: var(--cyan-bright);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .date-tag {
+      display: inline-block;
+      margin-top: 8px;
+      color: #64748b;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>時間逆転スタジオ - Time Reversal Studio Pro</h1>
+      <div class="subtitle">公式プライバシーポリシー (Official Privacy Policy)</div>
+      <div class="badge-bar">
+        <span class="badge">🔒 100% 完全ローカル処理</span>
+        <span class="badge badge-green">🚫 広告ゼロ・ユーザー追跡ゼロ</span>
+        <span class="badge">🛡️ オープンソース</span>
+      </div>
+    </header>
+
+    <main class="policy-card">
+      <div class="policy-section">
+        <h2>1. はじめに</h2>
+        <p>
+          「時間逆転スタジオ - Time Reversal Studio Pro」（以下、「本アプリケーション」）は、<strong>youyouboydragon_studio</strong>（以下、「当開発者」）によって開発・提供されるWindows向け高精度動画逆再生ソフトウェアです。
+        </p>
+        <p>
+          当開発者は、利用者の皆様のプライバシーと個人データの保護を最も重要な使命と考えております。本プライバシーポリシーでは、本アプリケーションにおける情報およびデータの取り扱いについて明確に規定します。
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h2>2. 100% 完全ローカル処理（外部送信ゼロ）の保証</h2>
+        <div class="highlight-box">
+          <p>
+            本アプリケーションで読み込まれる動画データ（映像・音声・メタデータ等）は、すべて利用者ご自身のPC（ローカル環境）上でのみ処理されます。外部サーバーやクラウドへの送信は一切行われません。
+          </p>
+        </div>
+        <ul>
+          <li>利用者が指定した動画ファイルは、ローカル内の組み込みエンジン（FFmpeg）によって直接解析・チャンク分割・逆再生エンコード・結合されます。</li>
+          <li>動画ファイルやその一部、画像フレーム、音声データが当開発者または第三者のサーバーへアップロードされることは技術的にあり得ません。</li>
+          <li>オフライン環境（インターネット接続が切断された状態）でも、本アプリケーションのすべての逆再生機能は100%正常に稼働します。</li>
+        </ul>
+      </div>
+
+      <div class="policy-section">
+        <h2>3. 個人情報・利用データの非収集（広告なし・トラッキングなし）</h2>
+        <p>
+          本アプリケーションは、利用者の個人情報やアクティビティログを一切収集・保存・送信いたしません。
+        </p>
+        <ul>
+          <li><strong>広告配信モジュールなし</strong>: 広告表示のためのSDKや広告トラッキングコードは一切組み込まれていません。</li>
+          <li><strong>利用統計・テレメトリなし</strong>: 操作履歴、起動回数、クラッシュログなどを外部に自動送信するテレメトリ機能は一切搭載していません。</li>
+          <li><strong>アカウント登録不要</strong>: 会員登録やログインを行わずにすべての機能を無制限にご利用いただけます。</li>
+          <li><strong>クッキー（Cookie）不使用</strong>: クッキーや端末識別子の生成・送信は行いません。</li>
+        </ul>
+      </div>
+
+      <div class="policy-section">
+        <h2>4. ハードウェア情報の利用について</h2>
+        <p>
+          本アプリケーションは、高速ハードウェアアクセラレーション（AMD AMF、NVIDIA NVENC、Intel QuickSync等）を有効化するために、ローカルOSのハードウェア情報（GPU名、CPUコア数）を問い合わせます。
+        </p>
+        <p>
+          この問い合わせは、PC内の適切なエンコード方式を決定するためだけにローカル完結で参照されるものであり、ハードウェア情報が外部へ送信されることは一切ありません。
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h2>5. 一時ファイル（キャッシュ）の取り扱い</h2>
+        <p>
+          10時間以上の超長尺動画でもメモリ枯渇を起こさずに逆再生を可能にするため、処理中に一時的な分割チャンク動画がWindowsの標準一時フォルダ（<code>%TEMP%</code>）内に作成されます。
+        </p>
+        <p>
+          これらの一時ファイルは、逆再生完了時またはキャンセル時に本アプリケーションによって自動的に完全削除されます。
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h2>6. オープンソースとサードパーティ製コンポーネント</h2>
+        <p>
+          本アプリケーションは、Electron（MIT License）および FFmpeg（LGPL/GPL）等の定評あるオープンソースソフトウェアを利用して構築されています。これらのコンポーネントによる外部への不正なデータ送信がないことを確認しています。
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h2>7. お問い合わせ</h2>
+        <p>
+          本プライバシーポリシーに関するご質問やご不明点、不具合報告は、公式GitHubリポジトリのIssueよりお問い合わせいただけます。
+        </p>
+        <p>
+          GitHub リポジトリ: <a href="https://github.com/youyouboydragonOfficial/time-reversal-studio-pro" target="_blank" rel="noopener">youyouboydragonOfficial/time-reversal-studio-pro</a>
+        </p>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div>時間逆転スタジオ - Time Reversal Studio Pro</div>
+      <div><strong>© youyouboydragon_studio</strong> All rights reserved.</div>
+      <div class="date-tag">制定日: 2026年11月11日 (v1.3.0)</div>
+    </footer>
+  </div>
+</body>
+</html>

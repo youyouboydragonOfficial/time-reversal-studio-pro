@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('api', {
   startReversal: (options) => ipcRenderer.invoke('start-reversal', options),
   cancelReversal: () => ipcRenderer.invoke('cancel-reversal'),
   openInFolder: (filePath) => ipcRenderer.invoke('open-in-folder', filePath),
+  openExternal: (url) => ipcRenderer.invoke('open-external', url),
   onProgress: (callback) => {
     const handler = (event, data) => callback(data);
     ipcRenderer.on('reversal-progress', handler);

@@ -545,3 +545,35 @@ function resetProcessingState() {
   btnCancel.style.display = 'none';
   liveFpsBadge.style.display = 'none';
 }
+
+// Privacy & Security Modal Listeners
+const privacyModal = document.getElementById('privacyModal');
+const btnOpenPrivacy = document.getElementById('btnOpenPrivacy');
+const btnClosePrivacy = document.getElementById('btnClosePrivacy');
+const btnOpenWebPolicy = document.getElementById('btnOpenWebPolicy');
+
+if (btnOpenPrivacy && privacyModal) {
+  btnOpenPrivacy.addEventListener('click', () => {
+    privacyModal.style.display = 'flex';
+  });
+}
+
+if (btnClosePrivacy && privacyModal) {
+  btnClosePrivacy.addEventListener('click', () => {
+    privacyModal.style.display = 'none';
+  });
+}
+
+if (privacyModal) {
+  privacyModal.addEventListener('click', (e) => {
+    if (e.target === privacyModal) {
+      privacyModal.style.display = 'none';
+    }
+  });
+}
+
+if (btnOpenWebPolicy) {
+  btnOpenWebPolicy.addEventListener('click', () => {
+    window.api.openExternal('https://youyouboydragonofficial.github.io/time-reversal-studio-pro/privacy.html');
+  });
+}

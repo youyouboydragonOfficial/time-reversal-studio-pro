@@ -145,6 +145,14 @@ ipcMain.handle('open-in-folder', async (event, filePath) => {
   return false;
 });
 
+ipcMain.handle('open-external', async (event, url) => {
+  if (url && (url.startsWith('https://') || url.startsWith('http://'))) {
+    await shell.openExternal(url);
+    return true;
+  }
+  return false;
+});
+
 // Window controls
 ipcMain.on('window-minimize', () => {
   if (mainWindow) mainWindow.minimize();

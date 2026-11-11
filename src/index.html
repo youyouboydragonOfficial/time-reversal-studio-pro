@@ -22,7 +22,7 @@
         <span class="brand-title">時間逆転スタジオ</span>
         <span class="brand-subtitle">TIME REVERSAL STUDIO PRO</span>
       </div>
-      <span class="pro-chip">STUDIO v1.3</span>
+      <span class="pro-chip">STUDIO v1.4</span>
     </div>
 
     <div class="telemetry-bar">
@@ -366,6 +366,18 @@
         <span>📁 完成動画フォルダを開く</span>
       </button>
     </div>
+
+    <!-- Trust & Copyright Bar -->
+    <div class="footer-trust-bar">
+      <div class="trust-left">
+        <span class="trust-badge">🔒 100% 完全ローカル処理 (動画外部送信ゼロ)</span>
+        <span class="trust-badge">🚫 広告なし・ユーザー追跡なし</span>
+      </div>
+      <div class="trust-right">
+        <button class="btn-privacy-pill" id="btnOpenPrivacy">🔒 セキュリティ＆規約</button>
+        <span class="copyright-label">© youyouboydragon_studio</span>
+      </div>
+    </div>
   </footer>
 
   <!-- High-Load Warning Modal (Dynamic per Load Level) -->
@@ -420,6 +432,56 @@
       <div class="modal-foot">
         <button class="btn-warn-cancel" id="btnModalCancel">キャンセル (安全モード維持)</button>
         <button class="btn-warn-confirm" id="btnModalConfirm" disabled>高負荷モードを有効化</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Concise Privacy & Security Modal -->
+  <div class="modal-backdrop" id="privacyModal" style="display: none;">
+    <div class="privacy-modal-box">
+      <div class="privacy-banner">
+        <span class="privacy-icon">🛡️</span>
+        <div class="banner-text">
+          <h3>セキュリティ & プライバシー保護方針</h3>
+          <span class="banner-sub">100% LOCAL PROCESSING & PRIVACY FIRST</span>
+        </div>
+        <button class="modal-close-btn" id="btnClosePrivacy" title="閉じる">&times;</button>
+      </div>
+      <div class="privacy-content">
+        <div class="privacy-card">
+          <div class="privacy-card-header">
+            <span class="card-icon">🔒</span>
+            <strong>完全オフライン・ローカル処理保証</strong>
+          </div>
+          <p>
+            読み込んだすべての動画データは、お使いのPC内（ローカル環境）でのみ解析・分割・逆再生・結合されます。いかなる外部サーバーやクラウドへも送信・保存されることは一切ありません。
+          </p>
+        </div>
+
+        <div class="privacy-card">
+          <div class="privacy-card-header">
+            <span class="card-icon">🚫</span>
+            <strong>完全広告ゼロ・個人データ収集ゼロ</strong>
+          </div>
+          <p>
+            広告配信ネットワーク、アクセス解析、トラッキング、テレメトリ等のモジュールは一切含まれていません。個人情報や動画内容を追跡・取得することは技術的に行いません。
+          </p>
+        </div>
+
+        <div class="privacy-card">
+          <div class="privacy-card-header">
+            <span class="card-icon">⚡</span>
+            <strong>ハードウェアアクセラレーションのローカル制御</strong>
+          </div>
+          <p>
+            GPU/CPUの検出はお使いのPCの最適エンコーダー（AMD AMF / NVIDIA NVENC / Intel QSV / CPU）を選択するためだけにローカルで実行されます。
+          </p>
+        </div>
+
+        <div class="privacy-footer-row">
+          <span class="privacy-cr">© youyouboydragon_studio</span>
+          <button class="btn-view-web-policy" id="btnOpenWebPolicy">🌐 公式Webプライバシーポリシーを開く</button>
+        </div>
       </div>
     </div>
   </div>

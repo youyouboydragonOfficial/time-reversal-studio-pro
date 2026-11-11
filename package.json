@@ -1,6 +1,6 @@
 {
   "name": "time-reversal-studio-pro",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "時間逆転スタジオ - Time Reversal Studio Pro: ゲーミングPC超高負荷並列ターボ＆リアルタイム進行メーター搭載 次世代動画逆再生スイート",
   "main": "src/main.js",
   "author": "youyouboydragonOfficial",
