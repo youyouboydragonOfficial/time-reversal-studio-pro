@@ -15,7 +15,7 @@
         <span class="brand-title">時間逆転スタジオ</span>
         <span class="brand-subtitle">Time Reversal Studio Pro</span>
       </div>
-      <span class="version-tag">PRO v1.0.0</span>
+      <span class="version-tag">PRO v1.1.0</span>
     </div>
 
     <div class="telemetry-bar">
@@ -38,7 +38,7 @@
     <section class="left-pane">
       <div class="pane-header">
         <h2>🎥 ソース動画 & プレビュー</h2>
-        <span class="pane-tag">SOURCE & PREVIEW</span>
+        <span class="pane-tag">SOURCE & LIVE PREVIEW</span>
       </div>
 
       <!-- Drop Zone -->
@@ -87,7 +87,7 @@
             <span class="item-val" id="valSize">-</span>
           </div>
           <div class="info-item">
-            <span class="item-title">コーデック / 音声</span>
+            <span class="item-title">総フレーム数 / コーデック</span>
             <span class="item-val" id="valCodecs">-</span>
           </div>
         </div>
@@ -102,6 +102,47 @@
       </div>
 
       <div class="settings-scroll">
+        <!-- Performance Mode (Gaming PC Turbo vs Safe Mode) -->
+        <div class="setting-group highlight-box">
+          <label class="setting-title">
+            <div class="title-with-badge">
+              <span>🔥 処理パフォーマンス設定 (ゲーミングPC並列処理)</span>
+              <span class="tag-turbo" id="turboBadge">通常モード</span>
+            </div>
+            <span class="setting-help">並列マルチワーカーでエンコード速度を極限まで加速</span>
+          </label>
+          <div class="radio-grid-2">
+            <label class="radio-card active" data-mode="safe">
+              <input type="radio" name="perfMode" value="1" checked>
+              <div class="radio-body">
+                <span class="radio-name">🛡️ 10時間超安定モード (1スレッド)</span>
+                <span class="radio-desc">RAM消費150MB以下固定。PCが重くならず100%安全</span>
+              </div>
+            </label>
+            <label class="radio-card warning-hover" data-mode="turbo-2">
+              <input type="radio" name="perfMode" value="2">
+              <div class="radio-body">
+                <span class="radio-name">⚡ 2並列ターボ (速度 約2倍)</span>
+                <span class="radio-desc">6コア以上CPU / GPU搭載向け。高効率並列処理</span>
+              </div>
+            </label>
+            <label class="radio-card warning-hover" data-mode="turbo-4">
+              <input type="radio" name="perfMode" value="4">
+              <div class="radio-body">
+                <span class="radio-name">🔥 ゲーミングPC 4並列 (速度 約3〜4倍)</span>
+                <span class="radio-desc">RTX / Radeon搭載ゲーミングPC向け。超高速処理</span>
+              </div>
+            </label>
+            <label class="radio-card warning-hover" data-mode="turbo-8">
+              <input type="radio" name="perfMode" value="8">
+              <div class="radio-body">
+                <span class="radio-name">🚀 ワークステーション 8並列 (極限爆速)</span>
+                <span class="radio-desc">12〜16コア以上ハイエンドデスクトップ向け</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
         <!-- GPU Acceleration Tile -->
         <div class="setting-group">
           <label class="setting-title">
@@ -116,29 +157,29 @@
         <!-- Chunk Stability Mode -->
         <div class="setting-group">
           <label class="setting-title">
-            <span>🧠 10時間＋無限安定化パイプライン (RAM枯渇防止)</span>
-            <span class="setting-help">分割処理でメモリ消費を150MB以下に常時固定</span>
+            <span>🧠 チャンク分割サイズ (RAM枯渇防止)</span>
+            <span class="setting-help">動画を一定間隔に分割してメモリ消費を抑制</span>
           </label>
           <div class="radio-grid">
             <label class="radio-card active">
               <input type="radio" name="chunkSize" value="20" checked>
               <div class="radio-body">
-                <span class="radio-name">20秒セグメント (推奨)</span>
+                <span class="radio-name">20秒 (推奨バランス)</span>
                 <span class="radio-desc">最速＆高安定。長尺動画に最適</span>
               </div>
             </label>
             <label class="radio-card">
               <input type="radio" name="chunkSize" value="10">
               <div class="radio-body">
-                <span class="radio-name">10秒セグメント (超低負荷)</span>
+                <span class="radio-name">10秒 (超低負荷)</span>
                 <span class="radio-desc">メモリ消費を最小限に抑制</span>
               </div>
             </label>
             <label class="radio-card">
               <input type="radio" name="chunkSize" value="40">
               <div class="radio-body">
-                <span class="radio-name">40秒セグメント (高速結合)</span>
-                <span class="radio-desc">強力なGPU搭載PC向け</span>
+                <span class="radio-name">40秒 (大容量チャンク)</span>
+                <span class="radio-desc">高速GPU＆大容量RAM向け</span>
               </div>
             </label>
           </div>
@@ -215,7 +256,7 @@
     </section>
   </main>
 
-  <!-- Bottom Mission Control Bar -->
+  <!-- Bottom Mission Control Bar with Real-Time Progress -->
   <footer class="mission-control">
     <div class="progress-section" id="progressSection">
       <div class="progress-header">
@@ -223,29 +264,38 @@
           <span class="spinner" id="progressSpinner" style="display: none;"></span>
           <span class="stage-text" id="stageText">動画を選択して「時間逆転を開始」を押してください</span>
         </div>
-        <div class="percent-text" id="percentText">0%</div>
+        <div class="percent-container">
+          <span class="fps-live-badge" id="liveFpsBadge" style="display: none;">0 FPS</span>
+          <span class="percent-text" id="percentText">0%</span>
+        </div>
       </div>
 
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+      <!-- Dual Layer Progress Track -->
+      <div class="progress-track-wrapper">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width: 0%;">
+            <div class="progress-glow"></div>
+          </div>
+        </div>
       </div>
 
+      <!-- Real-Time Telemetry Grid -->
       <div class="metrics-grid">
         <div class="metric-item">
-          <span class="metric-lbl">処理速度</span>
-          <span class="metric-val" id="metricSpeed">-</span>
+          <span class="metric-lbl">処理速度 / レンダリング</span>
+          <span class="metric-val text-cyan" id="metricSpeed">-</span>
         </div>
         <div class="metric-item">
-          <span class="metric-lbl">経過時間</span>
-          <span class="metric-val" id="metricElapsed">00:00:00</span>
+          <span class="metric-lbl">処理フレーム数</span>
+          <span class="metric-val" id="metricFrames">0 / 0</span>
         </div>
         <div class="metric-item">
-          <span class="metric-lbl">推定残り時間</span>
-          <span class="metric-val" id="metricRemaining">-</span>
+          <span class="metric-lbl">経過時間 / 残り時間</span>
+          <span class="metric-val" id="metricTimes">00:00:00 / -</span>
         </div>
         <div class="metric-item">
           <span class="metric-lbl">メモリ消費 (RAM)</span>
-          <span class="metric-val text-green" id="metricRam">安定 (120 MB)</span>
+          <span class="metric-val text-green" id="metricRam">完全安定 (120 MB)</span>
         </div>
       </div>
     </div>
@@ -257,13 +307,47 @@
         <span class="btn-text">時間逆転を開始 (START REVERSE)</span>
       </button>
       <button class="btn-cancel" id="btnCancel" style="display: none;">
-        <span>⏹ 中止</span>
+        <span>⏹ 中止 (Cancel)</span>
       </button>
       <button class="btn-open-folder" id="btnOpenFolder" style="display: none;">
-        <span>📁 フォルダで表示</span>
+        <span>📁 保存先フォルダを開く</span>
       </button>
     </div>
   </footer>
+
+  <!-- High-Load Warning Modal -->
+  <div class="modal-overlay" id="warningModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-icon-alert">⚠️</div>
+        <div class="modal-title-box">
+          <h3>高負荷並列ターボモードの警告</h3>
+          <span class="modal-subtitle">HIGH-LOAD MULTI-THREAD WARNING</span>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p class="modal-lead">
+          選択された<strong>「並列ターボモード (<span id="modalWorkerCount">4</span>スレッド並列)」</strong>は、高性能なGPUやマルチコアCPUを搭載したゲーミングPC・デスクトップPC向けの機能です。
+        </p>
+        <div class="modal-alert-box">
+          <ul>
+            <li>🔥 <strong>CPU/GPU負荷の上昇</strong>: プロセッサ使用率が最大100%近くまで上昇し、冷却ファンの回転音や発熱が大きくなります。</li>
+            <li>⚡ <strong>消費電力の増加</strong>: ノートPCをお使いの場合は、必ずACアダプターを接続してください。</li>
+            <li>🧠 <strong>メモリ消費</strong>: 並列数に応じてメモリ（RAM）消費量が増加します（2並列: 約300MB、4並列: 約600MB）。</li>
+            <li>⚠️ 冷却環境が不十分な薄型ノートPCでは、熱によるサーマルスロットリング（保護のための減速）が起きる場合があります。</li>
+          </ul>
+        </div>
+        <label class="modal-agree-label">
+          <input type="checkbox" id="chkAgreeWarning">
+          <span>上記のリスクと負荷を理解した上で、高負荷ターボモードを有効にする</span>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="btnModalCancel">キャンセル (安全モード維持)</button>
+        <button class="btn-modal-confirm" id="btnModalConfirm" disabled>高負荷モードを有効化</button>
+      </div>
+    </div>
+  </div>
 
   <script src="renderer.js"></script>
 </body>

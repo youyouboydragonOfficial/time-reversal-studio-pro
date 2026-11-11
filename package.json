@@ -1,7 +1,7 @@
 {
   "name": "time-reversal-studio-pro",
-  "version": "1.0.0",
-  "description": "時間逆転スタジオ - Time Reversal Studio Pro: 10時間以上の大容量動画もクラッシュ率0%で爆速処理する次世代動画逆再生スイート",
+  "version": "1.1.0",
+  "description": "時間逆転スタジオ - Time Reversal Studio Pro: ゲーミングPC超高負荷並列ターボ＆リアルタイム進行メーター搭載 次世代動画逆再生スイート",
   "main": "src/main.js",
   "author": "youyouboydragonOfficial",
   "license": "MIT",
