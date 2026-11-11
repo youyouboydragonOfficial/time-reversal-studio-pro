@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>時間逆転スタジオ - Time Reversal Studio Pro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Custom Titlebar -->
+  <header class="titlebar">
+    <div class="brand">
+      <img src="assets/icon.png" alt="Logo" class="brand-icon">
+      <div class="brand-text">
+        <span class="brand-title">時間逆転スタジオ</span>
+        <span class="brand-subtitle">Time Reversal Studio Pro</span>
+      </div>
+      <span class="version-tag">PRO v1.0.0</span>
+    </div>
+
+    <div class="telemetry-bar">
+      <div class="gpu-badge" id="gpuBadge">
+        <span class="badge-dot"></span>
+        <span id="gpuName">GPU ACCELERATION: DETECTING...</span>
+      </div>
+    </div>
+
+    <div class="window-controls">
+      <button class="win-btn" id="btnMinimize" title="最小化">&#x2013;</button>
+      <button class="win-btn" id="btnMaximize" title="最大化">&#x25A2;</button>
+      <button class="win-btn win-close" id="btnClose" title="閉じる">&#x2715;</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <!-- Left Column: Video Input / Preview -->
+    <section class="left-pane">
+      <div class="pane-header">
+        <h2>🎥 ソース動画 & プレビュー</h2>
+        <span class="pane-tag">SOURCE & PREVIEW</span>
+      </div>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-content" id="dropPrompt">
+          <div class="drop-icon-wrapper">
+            <svg class="drop-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+          <h3>動画ファイルをここにドラッグ＆ドロップ</h3>
+          <p>またはファイル選択ボタンをクリック（MP4, MOV, MKV, AVI, WebM 対応）</p>
+          <button class="btn-select" id="btnSelectFile">📁 動画ファイルを選択</button>
+          <div class="safe-badge">🛡️ 10時間以上の超大容量動画もクラッシュ率0%で完全処理</div>
+        </div>
+
+        <!-- Video Player (Hidden initially) -->
+        <div class="video-preview-wrapper" id="videoPreviewWrapper" style="display: none;">
+          <video id="previewPlayer" controls></video>
+          <div class="video-overlay-info" id="videoOverlayInfo">
+            <span class="overlay-badge" id="overlayDuration">00:00:00</span>
+            <span class="overlay-badge" id="overlayResolution">1920x1080</span>
+            <span class="overlay-badge" id="overlayFps">60 FPS</span>
+          </div>
+          <button class="btn-reselect" id="btnReselect">別の動画を選択</button>
+        </div>
+      </div>
+
+      <!-- Media Info Card -->
+      <div class="info-card" id="infoCard" style="display: none;">
+        <div class="info-row">
+          <span class="info-label">ファイル名</span>
+          <span class="info-val" id="valFilename">-</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="item-title">動画の長さ</span>
+            <span class="item-val" id="valDuration">-</span>
+          </div>
+          <div class="info-item">
+            <span class="item-title">解像度 / フレームレート</span>
+            <span class="item-val" id="valResFps">-</span>
+          </div>
+          <div class="info-item">
+            <span class="item-title">ファイルサイズ</span>
+            <span class="item-val" id="valSize">-</span>
+          </div>
+          <div class="info-item">
+            <span class="item-title">コーデック / 音声</span>
+            <span class="item-val" id="valCodecs">-</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Studio Controls -->
+    <section class="right-pane">
+      <div class="pane-header">
+        <h2>⚡ 逆再生スタジオ設定</h2>
+        <span class="pane-tag">STUDIO CONTROLS</span>
+      </div>
+
+      <div class="settings-scroll">
+        <!-- GPU Acceleration Tile -->
+        <div class="setting-group">
+          <label class="setting-title">
+            <span>🚀 ハードウェア高速化エンジン</span>
+            <span class="setting-help">自動検知済みの最適GPUエンコーダー</span>
+          </label>
+          <select id="selectEncoder" class="studio-select">
+            <option value="auto">自動選択 (最も高速なGPUエンジン)</option>
+          </select>
+        </div>
+
+        <!-- Chunk Stability Mode -->
+        <div class="setting-group">
+          <label class="setting-title">
+            <span>🧠 10時間＋無限安定化パイプライン (RAM枯渇防止)</span>
+            <span class="setting-help">分割処理でメモリ消費を150MB以下に常時固定</span>
+          </label>
+          <div class="radio-grid">
+            <label class="radio-card active">
+              <input type="radio" name="chunkSize" value="20" checked>
+              <div class="radio-body">
+                <span class="radio-name">20秒セグメント (推奨)</span>
+                <span class="radio-desc">最速＆高安定。長尺動画に最適</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="chunkSize" value="10">
+              <div class="radio-body">
+                <span class="radio-name">10秒セグメント (超低負荷)</span>
+                <span class="radio-desc">メモリ消費を最小限に抑制</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="chunkSize" value="40">
+              <div class="radio-body">
+                <span class="radio-name">40秒セグメント (高速結合)</span>
+                <span class="radio-desc">強力なGPU搭載PC向け</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Audio Settings -->
+        <div class="setting-group">
+          <label class="setting-title">
+            <span>🎵 音声チャンネルの扱い</span>
+            <span class="setting-help">動画の反転に合わせたオーディオ処理</span>
+          </label>
+          <div class="radio-pill-group">
+            <label class="pill active">
+              <input type="radio" name="audioMode" value="reverse" checked>
+              <span>⏪ 音声も逆再生 (Reverse Audio)</span>
+            </label>
+            <label class="pill">
+              <input type="radio" name="audioMode" value="mute">
+              <span>🔇 音声をミュート (Mute)</span>
+            </label>
+            <label class="pill">
+              <input type="radio" name="audioMode" value="keep">
+              <span>⏩ 元の音声を順再生で保持</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Speed Multiplier -->
+        <div class="setting-group">
+          <label class="setting-title">
+            <span>⏩ 時間逆転速度 (スピード倍率)</span>
+            <span class="setting-help">逆再生時の再生速度を自在に変更可能</span>
+          </label>
+          <div class="speed-selector">
+            <button class="speed-btn" data-speed="0.5">0.5x (スロー)</button>
+            <button class="speed-btn active" data-speed="1.0">1.0x (標準)</button>
+            <button class="speed-btn" data-speed="2.0">2.0x (2倍速)</button>
+            <button class="speed-btn" data-speed="4.0">4.0x (4倍速)</button>
+          </div>
+        </div>
+
+        <!-- Quality Preset -->
+        <div class="setting-group">
+          <label class="setting-title">
+            <span>🎨 出力画質プリセット</span>
+          </label>
+          <div class="radio-pill-group">
+            <label class="pill">
+              <input type="radio" name="quality" value="ultra">
+              <span>💎 スタジオマスター (最高画質 14Mbps)</span>
+            </label>
+            <label class="pill active">
+              <input type="radio" name="quality" value="high" checked>
+              <span>⭐ 高画質 (推奨 8Mbps)</span>
+            </label>
+            <label class="pill">
+              <input type="radio" name="quality" value="draft">
+              <span>⚡ 高速ドラフト (4Mbps)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Output Destination -->
+        <div class="setting-group">
+          <label class="setting-title">
+            <span>💾 保存先ファイル</span>
+          </label>
+          <div class="save-path-row">
+            <input type="text" id="inputOutputPath" class="studio-input" readonly placeholder="動画を選択すると自動決定されます">
+            <button class="btn-change-path" id="btnChangePath">変更</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Mission Control Bar -->
+  <footer class="mission-control">
+    <div class="progress-section" id="progressSection">
+      <div class="progress-header">
+        <div class="stage-info">
+          <span class="spinner" id="progressSpinner" style="display: none;"></span>
+          <span class="stage-text" id="stageText">動画を選択して「時間逆転を開始」を押してください</span>
+        </div>
+        <div class="percent-text" id="percentText">0%</div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-item">
+          <span class="metric-lbl">処理速度</span>
+          <span class="metric-val" id="metricSpeed">-</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-lbl">経過時間</span>
+          <span class="metric-val" id="metricElapsed">00:00:00</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-lbl">推定残り時間</span>
+          <span class="metric-val" id="metricRemaining">-</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-lbl">メモリ消費 (RAM)</span>
+          <span class="metric-val text-green" id="metricRam">安定 (120 MB)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn-primary" id="btnStartReverse" disabled>
+        <span class="btn-icon">⏩</span>
+        <span class="btn-text">時間逆転を開始 (START REVERSE)</span>
+      </button>
+      <button class="btn-cancel" id="btnCancel" style="display: none;">
+        <span>⏹ 中止</span>
+      </button>
+      <button class="btn-open-folder" id="btnOpenFolder" style="display: none;">
+        <span>📁 フォルダで表示</span>
+      </button>
+    </div>
+  </footer>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

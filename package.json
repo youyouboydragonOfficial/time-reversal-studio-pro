@@ -1,0 +1,57 @@
+{
+  "name": "time-reversal-studio-pro",
+  "version": "1.0.0",
+  "description": "時間逆転スタジオ - Time Reversal Studio Pro: 10時間以上の大容量動画もクラッシュ率0%で爆速処理する次世代動画逆再生スイート",
+  "main": "src/main.js",
+  "author": "youyouboydragonOfficial",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build:portable": "electron-builder --win portable",
+    "build:installer": "electron-builder --win nsis",
+    "build:all": "electron-builder --win portable nsis"
+  },
+  "build": {
+    "appId": "com.youyouboydragon.timereversal.studio",
+    "productName": "時間逆転スタジオ - Time Reversal Studio Pro",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "bin/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "bin",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "portable",
+        "nsis"
+      ],
+      "icon": "src/assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "時間逆転スタジオ (Time Reversal Studio)",
+      "artifactName": "Time-Reversal-Studio-Pro-Setup-v${version}.exe"
+    },
+    "portable": {
+      "artifactName": "Time-Reversal-Studio-Pro-Portable-v${version}.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.0"
+  }
+}
