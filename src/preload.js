@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('api', {
   detectGpu: () => ipcRenderer.invoke('detect-gpu'),
   selectFile: () => ipcRenderer.invoke('select-file'),
   selectSavePath: (defaultName) => ipcRenderer.invoke('select-save-path', defaultName),
+  getSpecialPaths: () => ipcRenderer.invoke('get-special-paths'),
   probeVideo: (filePath) => ipcRenderer.invoke('probe-video', filePath),
   startReversal: (options) => ipcRenderer.invoke('start-reversal', options),
   cancelReversal: () => ipcRenderer.invoke('cancel-reversal'),

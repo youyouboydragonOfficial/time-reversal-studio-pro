@@ -3,14 +3,20 @@ let currentInputPath = null;
 let currentOutputPath = null;
 let currentVideoInfo = null;
 let selectedSpeed = 1.0;
-let isProcessing = false;
-let currentConcurrency = 1; // 1 = Safe mode, 2, 4, 8 = Turbo
+let selectedQuality = 'high';
+let selectedChunkSize = 20;
+let selectedAudioMode = 'reverse';
+let currentConcurrency = 1;
 let pendingConcurrency = 1;
 let warningConfirmed = false;
+let isProcessing = false;
+let specialPaths = { downloads: '', desktop: '', videos: '' };
 
 // DOM Elements
 const gpuBadge = document.getElementById('gpuBadge');
 const gpuName = document.getElementById('gpuName');
+const cpuChip = document.getElementById('cpuChip');
+const cpuName = document.getElementById('cpuName');
 const selectEncoder = document.getElementById('selectEncoder');
 const turboBadge = document.getElementById('turboBadge');
 
@@ -33,13 +39,19 @@ const valSize = document.getElementById('valSize');
 const valCodecs = document.getElementById('valCodecs');
 
 const inputOutputPath = document.getElementById('inputOutputPath');
+const pathInputWrapper = document.getElementById('pathInputWrapper');
 const btnChangePath = document.getElementById('btnChangePath');
+const saveStatusPill = document.getElementById('saveStatusPill');
 
-const progressSpinner = document.getElementById('progressSpinner');
+const presetDownloads = document.getElementById('presetDownloads');
+const presetDesktop = document.getElementById('presetDesktop');
+const presetSameDir = document.getElementById('presetSameDir');
+
 const stageText = document.getElementById('stageText');
 const percentText = document.getElementById('percentText');
 const progressFill = document.getElementById('progressFill');
 const liveFpsBadge = document.getElementById('liveFpsBadge');
+const pulseIndicator = document.getElementById('pulseIndicator');
 
 const metricSpeed = document.getElementById('metricSpeed');
 const metricFrames = document.getElementById('metricFrames');
@@ -62,8 +74,14 @@ document.getElementById('btnMinimize').addEventListener('click', () => window.ap
 document.getElementById('btnMaximize').addEventListener('click', () => window.api.maximize());
 document.getElementById('btnClose').addEventListener('click', () => window.api.close());
 
-// Initialize Hardware Detection
-async function initHardwareDetection() {
+// Initialize Hardware & Special Paths
+async function init() {
+  try {
+    specialPaths = await window.api.getSpecialPaths();
+  } catch (e) {
+    console.error('getSpecialPaths error:', e);
+  }
+
   try {
     const gpuInfo = await window.api.detectGpu();
     selectEncoder.innerHTML = '';
@@ -72,79 +90,160 @@ async function initHardwareDetection() {
       const opt = document.createElement('option');
       opt.value = enc.id;
       const isRec = enc.id === gpuInfo.recommended.id;
-      opt.textContent = `${enc.name}${isRec ? ' ★ (推奨)' : ''}`;
+      opt.textContent = `${enc.name}${isRec ? ' ★ (推奨・最適化済)' : ''}`;
       if (isRec) opt.selected = true;
       selectEncoder.appendChild(opt);
     });
 
     gpuName.textContent = `GPU: ${gpuInfo.recommended.vendor} (${gpuInfo.recommended.id.toUpperCase()}) ACTIVE`;
-    gpuBadge.title = `ハードウェアアクセラレーション有効: ${gpuInfo.recommended.name} (CPUコア数: ${gpuInfo.cpuCores})`;
+    gpuBadge.title = `ハードウェアアクセラレーション有効: ${gpuInfo.recommended.name}`;
+    cpuName.textContent = `CPU: ${gpuInfo.cpuCores || 8} THREADS READY`;
   } catch (e) {
     console.error('GPU detection error:', e);
     gpuName.textContent = 'GPU ACCELERATION: ACTIVE (HYBRID)';
   }
 }
-initHardwareDetection();
+init();
 
-// Performance / Turbo Mode selection with Warning Check
-const perfCards = document.querySelectorAll('.radio-card[data-mode]');
-perfCards.forEach((card) => {
-  card.addEventListener('click', (e) => {
-    e.preventDefault();
-    const radio = card.querySelector('input');
-    const targetWorkers = parseInt(radio.value, 10);
+// Save Destination Handling (FIXED: works anytime!)
+async function openSaveDialog() {
+  const defaultBase = currentInputPath ? getSuggestedReversedName(currentInputPath) : 'reversed_video.mp4';
+  const currentVal = inputOutputPath.value || defaultBase;
+  const newPath = await window.api.selectSavePath(currentVal);
+  if (newPath) {
+    setOutputPath(newPath);
+  }
+}
 
-    if (targetWorkers === 1) {
-      // Safe mode
-      setConcurrencyMode(1);
+function setOutputPath(savePath) {
+  currentOutputPath = savePath;
+  inputOutputPath.value = savePath;
+  saveStatusPill.textContent = '設定完了';
+  saveStatusPill.className = 'info-pill green';
+}
+
+function getSuggestedReversedName(filePath) {
+  const lastDot = filePath.lastIndexOf('.');
+  return (lastDot > 0 ? filePath.substring(0, lastDot) : filePath) + '_reversed.mp4';
+}
+
+btnChangePath.addEventListener('click', openSaveDialog);
+pathInputWrapper.addEventListener('click', openSaveDialog);
+inputOutputPath.addEventListener('change', () => {
+  currentOutputPath = inputOutputPath.value;
+});
+
+// Quick Presets
+presetDownloads.addEventListener('click', () => {
+  const filename = currentInputPath ? pathBasename(getSuggestedReversedName(currentInputPath)) : 'reversed_video.mp4';
+  const target = (specialPaths.downloads || 'C:\\Users\\Default\\Downloads') + '\\' + filename;
+  setOutputPath(target);
+});
+
+presetDesktop.addEventListener('click', () => {
+  const filename = currentInputPath ? pathBasename(getSuggestedReversedName(currentInputPath)) : 'reversed_video.mp4';
+  const target = (specialPaths.desktop || 'C:\\Users\\Default\\Desktop') + '\\' + filename;
+  setOutputPath(target);
+});
+
+presetSameDir.addEventListener('click', () => {
+  if (currentInputPath) {
+    setOutputPath(getSuggestedReversedName(currentInputPath));
+  } else {
+    alert('先に動画ファイルを読み込んでください。');
+  }
+});
+
+function pathBasename(fullPath) {
+  return fullPath.split(/[/\\]/).pop();
+}
+
+// Performance Turbo Selection & Warning Modal
+const turboTiles = document.querySelectorAll('.turbo-tile');
+turboTiles.forEach((tile) => {
+  tile.addEventListener('click', () => {
+    const workers = parseInt(tile.dataset.workers, 10);
+    if (workers === 1) {
+      setTurboWorkers(1);
     } else {
-      // High load mode requested
       if (!warningConfirmed) {
-        pendingConcurrency = targetWorkers;
-        modalWorkerCount.textContent = targetWorkers;
+        pendingConcurrency = workers;
+        modalWorkerCount.textContent = workers;
         chkAgreeWarning.checked = false;
         btnModalConfirm.disabled = true;
         warningModal.style.display = 'flex';
       } else {
-        setConcurrencyMode(targetWorkers);
+        setTurboWorkers(workers);
       }
     }
   });
 });
 
-function setConcurrencyMode(workers) {
+function setTurboWorkers(workers) {
   currentConcurrency = workers;
-  perfCards.forEach((c) => {
-    const r = c.querySelector('input');
-    const isThis = parseInt(r.value, 10) === workers;
-    r.checked = isThis;
-    c.classList.toggle('active', isThis);
-    c.classList.toggle('warning-card', isThis && workers > 1);
+  turboTiles.forEach((t) => {
+    const isThis = parseInt(t.dataset.workers, 10) === workers;
+    t.classList.toggle('active', isThis);
   });
 
   if (workers > 1) {
     turboBadge.textContent = `⚡ ターボ有効 (${workers}並列)`;
-    turboBadge.classList.add('active-turbo');
+    turboBadge.className = 'hud-badge active-badge';
   } else {
-    turboBadge.textContent = '通常モード (高安定)';
-    turboBadge.classList.remove('active-turbo');
+    turboBadge.textContent = '通常セーフモード';
+    turboBadge.className = 'hud-badge';
   }
 }
 
-// Modal actions
 chkAgreeWarning.addEventListener('change', () => {
   btnModalConfirm.disabled = !chkAgreeWarning.checked;
 });
 
 btnModalCancel.addEventListener('click', () => {
   warningModal.style.display = 'none';
-  setConcurrencyMode(1); // revert to safe mode
+  setTurboWorkers(1);
 });
 
 btnModalConfirm.addEventListener('click', () => {
   warningConfirmed = true;
   warningModal.style.display = 'none';
-  setConcurrencyMode(pendingConcurrency);
+  setTurboWorkers(pendingConcurrency);
+});
+
+// Segmented Chunk Pills
+document.querySelectorAll('.seg-pill').forEach((pill) => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.seg-pill').forEach((p) => p.classList.remove('active'));
+    pill.classList.add('active');
+    selectedChunkSize = parseInt(pill.dataset.chunk, 10);
+  });
+});
+
+// Audio Pills
+document.querySelectorAll('.audio-pill').forEach((pill) => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.audio-pill').forEach((p) => p.classList.remove('active'));
+    pill.classList.add('active');
+    selectedAudioMode = pill.dataset.audio;
+  });
+});
+
+// Speed Tiles
+document.querySelectorAll('.speed-tile').forEach((tile) => {
+  tile.addEventListener('click', () => {
+    document.querySelectorAll('.speed-tile').forEach((t) => t.classList.remove('active'));
+    tile.classList.add('active');
+    selectedSpeed = parseFloat(tile.dataset.speed);
+  });
+});
+
+// Quality Tiles
+document.querySelectorAll('.quality-tile').forEach((tile) => {
+  tile.addEventListener('click', () => {
+    document.querySelectorAll('.quality-tile').forEach((t) => t.classList.remove('active'));
+    tile.classList.add('active');
+    selectedQuality = tile.dataset.quality;
+  });
 });
 
 // File Selection & Drag-and-Drop
@@ -181,52 +280,52 @@ async function handleFileSelect() {
 // Load Video and Probe
 async function loadVideo(filePath) {
   currentInputPath = filePath;
-  stageText.textContent = '動画ファイルを解析中...';
-  progressSpinner.style.display = 'inline-block';
+  stageText.textContent = '動画ファイルを解析中 (ffprobe)...';
+  pulseIndicator.style.backgroundColor = '#f59e0b';
+  pulseIndicator.style.boxShadow = '0 0 10px #f59e0b';
 
   try {
     const info = await window.api.probeVideo(filePath);
     currentVideoInfo = info;
 
-    // Show preview player
+    // Viewport
     dropPrompt.style.display = 'none';
     videoPreviewWrapper.style.display = 'flex';
     previewPlayer.src = filePath;
     previewPlayer.load();
 
-    // Overlay info
+    // HUD Pills
     overlayDuration.textContent = info.durationFormatted;
     overlayResolution.textContent = `${info.width}x${info.height}`;
     overlayFps.textContent = `${info.fps} FPS`;
 
-    // Populate info card
+    // Inspector
     infoCard.style.display = 'block';
-    const filename = filePath.split(/[/\\]/).pop();
-    valFilename.textContent = filename;
+    valFilename.textContent = pathBasename(filePath);
     valDuration.textContent = `${info.durationFormatted} (${Math.round(info.duration)}秒)`;
     valResFps.textContent = `${info.width}x${info.height} @ ${info.fps}fps`;
     valSize.textContent = formatBytes(info.sizeBytes);
     valCodecs.textContent = `${info.totalFrames.toLocaleString()} フレーム / ${info.codec.toUpperCase()} (${info.hasAudio ? info.audioCodec.toUpperCase() : '音声なし'})`;
 
-    // Auto default output path
-    const lastDot = filePath.lastIndexOf('.');
-    currentOutputPath = (lastDot > 0 ? filePath.substring(0, lastDot) : filePath) + '_reversed.mp4';
-    inputOutputPath.value = currentOutputPath;
+    // Default Save Path
+    if (!currentOutputPath) {
+      setOutputPath(getSuggestedReversedName(filePath));
+    }
 
-    // Ready state
+    // Ready
     btnStartReverse.disabled = false;
     btnOpenFolder.style.display = 'none';
     stageText.textContent = `準備完了 (${info.durationFormatted}) - 設定を確認して開始を押してください`;
-    progressSpinner.style.display = 'none';
+    pulseIndicator.style.backgroundColor = '#10b981';
+    pulseIndicator.style.boxShadow = '0 0 10px #10b981';
     metricFrames.textContent = `0 / ${info.totalFrames.toLocaleString()}`;
   } catch (err) {
     alert('動画の読み込みに失敗しました: ' + err.message);
     stageText.textContent = '動画の解析に失敗しました。';
-    progressSpinner.style.display = 'none';
+    pulseIndicator.style.backgroundColor = '#ef4444';
   }
 }
 
-// Format bytes
 function formatBytes(bytes) {
   if (!bytes) return '0 B';
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -238,44 +337,7 @@ function formatBytes(bytes) {
   return `${bytes.toFixed(1)} ${units[i]}`;
 }
 
-// Change Save Path
-btnChangePath.addEventListener('click', async () => {
-  if (!currentInputPath) return;
-  const newPath = await window.api.selectSavePath(inputOutputPath.value);
-  if (newPath) {
-    currentOutputPath = newPath;
-    inputOutputPath.value = newPath;
-  }
-});
-
-// Speed selector buttons
-document.querySelectorAll('.speed-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.speed-btn').forEach((b) => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedSpeed = parseFloat(btn.dataset.speed);
-  });
-});
-
-// Radio card active states (Chunk Size)
-document.querySelectorAll('.setting-group:not(.highlight-box) .radio-card').forEach((card) => {
-  card.addEventListener('click', () => {
-    document.querySelectorAll('.setting-group:not(.highlight-box) .radio-card').forEach((c) => c.classList.remove('active'));
-    card.classList.add('active');
-  });
-});
-
-document.querySelectorAll('.pill').forEach((pill) => {
-  pill.addEventListener('click', () => {
-    const name = pill.querySelector('input').name;
-    document.querySelectorAll(`.pill input[name="${name}"]`).forEach((i) => {
-      i.parentElement.classList.remove('active');
-    });
-    pill.classList.add('active');
-  });
-});
-
-// Real-Time Progress Listener
+// Progress Listener
 window.api.onProgress((data) => {
   stageText.textContent = data.stageText;
   percentText.textContent = `${data.percent}%`;
@@ -291,9 +353,9 @@ window.api.onProgress((data) => {
     metricFrames.textContent = `${data.processedFrames.toLocaleString()} / ${data.totalFrames.toLocaleString()}`;
   }
   metricTimes.textContent = `${data.elapsedTime || '00:00:00'} / ${data.remainingTime || '--:--:--'}`;
-  
-  const ramClass = data.ramUsageMB > 400 ? 'text-cyan' : 'text-green';
-  metricRam.className = `metric-val ${ramClass}`;
+
+  const ramClass = data.ramUsageMB > 400 ? 'hud-val text-cyan' : 'hud-val text-green';
+  metricRam.className = ramClass;
   metricRam.textContent = `${data.ramUsageMB || 130} MB (${data.concurrency > 1 ? data.concurrency + '並列稼働' : '完全安定'})`;
 
   if (data.stage === 'COMPLETED') {
@@ -309,28 +371,19 @@ btnStartReverse.addEventListener('click', async () => {
   btnStartReverse.disabled = true;
   btnCancel.style.display = 'inline-block';
   btnOpenFolder.style.display = 'none';
-  progressSpinner.style.display = 'inline-block';
 
-  // Read options
-  const encoder = selectEncoder.value;
-  const chunkSizeInput = document.querySelector('input[name="chunkSize"]:checked');
-  const chunkDuration = chunkSizeInput ? parseInt(chunkSizeInput.value, 10) : 20;
-
-  const audioModeInput = document.querySelector('input[name="audioMode"]:checked');
-  const audioMode = audioModeInput ? audioModeInput.value : 'reverse';
-
-  const qualityInput = document.querySelector('input[name="quality"]:checked');
-  const quality = qualityInput ? qualityInput.value : 'high';
+  pulseIndicator.style.backgroundColor = '#06b6d4';
+  pulseIndicator.style.boxShadow = '0 0 12px #06b6d4';
 
   const options = {
     inputPath: currentInputPath,
     outputPath: currentOutputPath,
-    encoder,
-    chunkDuration,
+    encoder: selectEncoder.value,
+    chunkDuration: selectedChunkSize,
     concurrency: currentConcurrency,
-    audioMode,
+    audioMode: selectedAudioMode,
     speed: selectedSpeed,
-    quality
+    quality: selectedQuality
   };
 
   try {
@@ -346,15 +399,15 @@ btnStartReverse.addEventListener('click', async () => {
   }
 });
 
-// Cancel Reversal
+// Cancel
 btnCancel.addEventListener('click', async () => {
   if (!isProcessing) return;
-  stageText.textContent = '中止処理中...';
+  stageText.textContent = '中止処理中 (Aborting)...';
   await window.api.cancelReversal();
   resetProcessingState();
 });
 
-// Open output folder
+// Open Output Folder
 btnOpenFolder.addEventListener('click', async () => {
   if (currentOutputPath) {
     await window.api.openInFolder(currentOutputPath);
@@ -367,8 +420,9 @@ function onReversalComplete() {
   percentText.textContent = '100%';
   progressFill.style.width = '100%';
   btnOpenFolder.style.display = 'inline-block';
+  pulseIndicator.style.backgroundColor = '#10b981';
 
-  // Play output video
+  // Preview generated reversed video
   previewPlayer.src = currentOutputPath;
   previewPlayer.load();
   previewPlayer.play().catch(() => {});
@@ -378,5 +432,5 @@ function resetProcessingState() {
   isProcessing = false;
   btnStartReverse.disabled = false;
   btnCancel.style.display = 'none';
-  progressSpinner.style.display = 'none';
+  liveFpsBadge.style.display = 'none';
 }

@@ -7,21 +7,32 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Custom Titlebar -->
+  <!-- Ambient Cyber Lighting -->
+  <div class="ambient-glow cyan"></div>
+  <div class="ambient-glow purple"></div>
+
+  <!-- Pro Studio Titlebar -->
   <header class="titlebar">
     <div class="brand">
-      <img src="assets/icon.png" alt="Logo" class="brand-icon">
+      <div class="brand-icon-wrapper">
+        <img src="assets/icon.png" alt="Logo" class="brand-icon">
+        <div class="brand-icon-glow"></div>
+      </div>
       <div class="brand-text">
         <span class="brand-title">時間逆転スタジオ</span>
-        <span class="brand-subtitle">Time Reversal Studio Pro</span>
+        <span class="brand-subtitle">TIME REVERSAL STUDIO PRO</span>
       </div>
-      <span class="version-tag">PRO v1.1.0</span>
+      <span class="pro-chip">STUDIO v1.2</span>
     </div>
 
     <div class="telemetry-bar">
-      <div class="gpu-badge" id="gpuBadge">
-        <span class="badge-dot"></span>
-        <span id="gpuName">GPU ACCELERATION: DETECTING...</span>
+      <div class="telemetry-chip gpu" id="gpuBadge">
+        <span class="status-led"></span>
+        <span id="gpuName">GPU: DETECTING ACCELERATION...</span>
+      </div>
+      <div class="telemetry-chip cpu" id="cpuChip">
+        <span class="cpu-icon">⚡</span>
+        <span id="cpuName">HYPER-THREADING ENGINE</span>
       </div>
     </div>
 
@@ -32,319 +43,347 @@
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="main-container">
-    <!-- Left Column: Video Input / Preview -->
-    <section class="left-pane">
-      <div class="pane-header">
-        <h2>🎥 ソース動画 & プレビュー</h2>
-        <span class="pane-tag">SOURCE & LIVE PREVIEW</span>
+  <!-- Main Workstation Layout -->
+  <main class="main-workstation">
+    <!-- Left Deck: Media & Cinema Preview -->
+    <section class="deck-pane left-deck">
+      <div class="deck-header">
+        <div class="deck-title">
+          <span class="deck-icon">🎬</span>
+          <h3>メディア・シネマプレビュー</h3>
+        </div>
+        <span class="hud-badge">VIEWPORT & METRICS</span>
       </div>
 
-      <!-- Drop Zone -->
+      <!-- Holographic Drop Zone -->
       <div class="drop-zone" id="dropZone">
-        <div class="drop-content" id="dropPrompt">
-          <div class="drop-icon-wrapper">
-            <svg class="drop-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
+        <div class="drop-prompt" id="dropPrompt">
+          <div class="radar-circle">
+            <div class="radar-scan"></div>
+            <div class="radar-center">
+              <svg class="drop-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+            </div>
           </div>
-          <h3>動画ファイルをここにドラッグ＆ドロップ</h3>
-          <p>またはファイル選択ボタンをクリック（MP4, MOV, MKV, AVI, WebM 対応）</p>
-          <button class="btn-select" id="btnSelectFile">📁 動画ファイルを選択</button>
-          <div class="safe-badge">🛡️ 10時間以上の超大容量動画もクラッシュ率0%で完全処理</div>
+          <h4>動画ファイルをドロップして読み込み</h4>
+          <p class="drop-desc">MP4, MOV, MKV, AVI, WebM, TS (4K / 60FPS / 10H+ 完全対応)</p>
+          <button class="btn-browse-file" id="btnSelectFile">
+            <span>📁 ファイルを選択する</span>
+          </button>
+          <div class="shield-tag">
+            <span class="shield-icon">🛡️</span>
+            <span>10時間以上の超長尺動画もメモリ枯渇0%保証</span>
+          </div>
         </div>
 
-        <!-- Video Player (Hidden initially) -->
-        <div class="video-preview-wrapper" id="videoPreviewWrapper" style="display: none;">
+        <!-- Cinema Viewport Player -->
+        <div class="cinema-viewport" id="videoPreviewWrapper" style="display: none;">
           <video id="previewPlayer" controls></video>
-          <div class="video-overlay-info" id="videoOverlayInfo">
-            <span class="overlay-badge" id="overlayDuration">00:00:00</span>
-            <span class="overlay-badge" id="overlayResolution">1920x1080</span>
-            <span class="overlay-badge" id="overlayFps">60 FPS</span>
+          <div class="cinema-hud">
+            <span class="hud-pill" id="overlayDuration">00:00:00</span>
+            <span class="hud-pill" id="overlayResolution">1920x1080</span>
+            <span class="hud-pill cyan" id="overlayFps">60 FPS</span>
           </div>
-          <button class="btn-reselect" id="btnReselect">別の動画を選択</button>
+          <button class="btn-switch-video" id="btnReselect">🔄 別の動画に変更</button>
         </div>
       </div>
 
-      <!-- Media Info Card -->
-      <div class="info-card" id="infoCard" style="display: none;">
-        <div class="info-row">
-          <span class="info-label">ファイル名</span>
-          <span class="info-val" id="valFilename">-</span>
+      <!-- Inspector Matrix Card -->
+      <div class="inspector-card" id="infoCard" style="display: none;">
+        <div class="inspector-header">
+          <span class="lbl">ロード済みファイル:</span>
+          <span class="filename-val" id="valFilename">-</span>
         </div>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="item-title">動画の長さ</span>
-            <span class="item-val" id="valDuration">-</span>
+        <div class="matrix-grid">
+          <div class="matrix-tile">
+            <span class="m-lbl">動画の総時間</span>
+            <span class="m-val" id="valDuration">-</span>
           </div>
-          <div class="info-item">
-            <span class="item-title">解像度 / フレームレート</span>
-            <span class="item-val" id="valResFps">-</span>
+          <div class="matrix-tile">
+            <span class="m-lbl">解像度 / フレームレート</span>
+            <span class="m-val text-cyan" id="valResFps">-</span>
           </div>
-          <div class="info-item">
-            <span class="item-title">ファイルサイズ</span>
-            <span class="item-val" id="valSize">-</span>
+          <div class="matrix-tile">
+            <span class="m-lbl">ファイル容量</span>
+            <span class="m-val" id="valSize">-</span>
           </div>
-          <div class="info-item">
-            <span class="item-title">総フレーム数 / コーデック</span>
-            <span class="item-val" id="valCodecs">-</span>
+          <div class="matrix-tile">
+            <span class="m-lbl">総フレーム数 / 音声</span>
+            <span class="m-val text-purple" id="valCodecs">-</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Right Column: Studio Controls -->
-    <section class="right-pane">
-      <div class="pane-header">
-        <h2>⚡ 逆再生スタジオ設定</h2>
-        <span class="pane-tag">STUDIO CONTROLS</span>
+    <!-- Right Deck: Studio Controls -->
+    <section class="deck-pane right-deck">
+      <div class="deck-header">
+        <div class="deck-title">
+          <span class="deck-icon">⚡</span>
+          <h3>逆再生スタジオ設定</h3>
+        </div>
+        <span class="hud-badge active-badge" id="turboBadge">通常セーフモード</span>
       </div>
 
-      <div class="settings-scroll">
-        <!-- Performance Mode (Gaming PC Turbo vs Safe Mode) -->
-        <div class="setting-group highlight-box">
-          <label class="setting-title">
-            <div class="title-with-badge">
-              <span>🔥 処理パフォーマンス設定 (ゲーミングPC並列処理)</span>
-              <span class="tag-turbo" id="turboBadge">通常モード</span>
+      <div class="deck-scroll">
+        <!-- Performance Mode Tiles -->
+        <div class="control-box turbo-box">
+          <div class="control-head">
+            <div class="head-title">
+              <span class="title-text">🔥 並列パフォーマンス (ゲーミングPC高速化)</span>
+              <span class="info-pill">GPU/CPUマルチスレッド</span>
             </div>
-            <span class="setting-help">並列マルチワーカーでエンコード速度を極限まで加速</span>
-          </label>
-          <div class="radio-grid-2">
-            <label class="radio-card active" data-mode="safe">
-              <input type="radio" name="perfMode" value="1" checked>
-              <div class="radio-body">
-                <span class="radio-name">🛡️ 10時間超安定モード (1スレッド)</span>
-                <span class="radio-desc">RAM消費150MB以下固定。PCが重くならず100%安全</span>
+            <p class="head-desc">並列ワーカー数を増やしてエンコード速度を極限まで加速します</p>
+          </div>
+          <div class="turbo-tiles-grid">
+            <div class="turbo-tile active" data-workers="1">
+              <div class="tile-radio-mark"></div>
+              <div class="tile-info">
+                <span class="tile-name">🛡️ 通常セーフ (1スレッド)</span>
+                <span class="tile-sub">RAM 150MB以下固定・100%安全</span>
               </div>
-            </label>
-            <label class="radio-card warning-hover" data-mode="turbo-2">
-              <input type="radio" name="perfMode" value="2">
-              <div class="radio-body">
-                <span class="radio-name">⚡ 2並列ターボ (速度 約2倍)</span>
-                <span class="radio-desc">6コア以上CPU / GPU搭載向け。高効率並列処理</span>
+            </div>
+            <div class="turbo-tile warning-tile" data-workers="2">
+              <div class="tile-radio-mark"></div>
+              <div class="tile-info">
+                <span class="tile-name">⚡ 2並列ターボ (約2倍速)</span>
+                <span class="tile-sub">6コア以上CPU / GPU向け</span>
               </div>
-            </label>
-            <label class="radio-card warning-hover" data-mode="turbo-4">
-              <input type="radio" name="perfMode" value="4">
-              <div class="radio-body">
-                <span class="radio-name">🔥 ゲーミングPC 4並列 (速度 約3〜4倍)</span>
-                <span class="radio-desc">RTX / Radeon搭載ゲーミングPC向け。超高速処理</span>
+            </div>
+            <div class="turbo-tile warning-tile" data-workers="4">
+              <div class="tile-radio-mark"></div>
+              <div class="tile-info">
+                <span class="tile-name">🔥 ゲーミング 4並列 (約3〜4倍速)</span>
+                <span class="tile-sub">RTX / Radeon搭載PC特化</span>
               </div>
-            </label>
-            <label class="radio-card warning-hover" data-mode="turbo-8">
-              <input type="radio" name="perfMode" value="8">
-              <div class="radio-body">
-                <span class="radio-name">🚀 ワークステーション 8並列 (極限爆速)</span>
-                <span class="radio-desc">12〜16コア以上ハイエンドデスクトップ向け</span>
+            </div>
+            <div class="turbo-tile warning-tile" data-workers="8">
+              <div class="tile-radio-mark"></div>
+              <div class="tile-info">
+                <span class="tile-name">🚀 極限 8並列 (爆速)</span>
+                <span class="tile-sub">12〜16コア以上ハイエンド向け</span>
               </div>
-            </label>
+            </div>
           </div>
         </div>
 
-        <!-- GPU Acceleration Tile -->
-        <div class="setting-group">
-          <label class="setting-title">
-            <span>🚀 ハードウェア高速化エンジン</span>
-            <span class="setting-help">自動検知済みの最適GPUエンコーダー</span>
-          </label>
-          <select id="selectEncoder" class="studio-select">
+        <!-- Save Destination (Fixed & Enhanced!) -->
+        <div class="control-box destination-box">
+          <div class="control-head">
+            <div class="head-title">
+              <span class="title-text">💾 出力保存先ファイル</span>
+              <span class="info-pill green" id="saveStatusPill">準備完了</span>
+            </div>
+            <p class="head-desc">逆再生後の動画の保存先を指定します（いつでも自由に変更可能）</p>
+          </div>
+
+          <div class="destination-input-row">
+            <div class="input-wrapper" id="pathInputWrapper">
+              <span class="input-icon">📁</span>
+              <input type="text" id="inputOutputPath" class="destination-input" placeholder="保存先をクリックして選択してください">
+            </div>
+            <button class="btn-browse-save" id="btnChangePath">
+              <span>参照...</span>
+            </button>
+          </div>
+
+          <!-- Quick Destination Presets -->
+          <div class="quick-presets">
+            <span class="preset-label">ワンクリック設定:</span>
+            <button class="preset-pill" id="presetDownloads">📥 ダウンロード</button>
+            <button class="preset-pill" id="presetDesktop">🖥️ デスクトップ</button>
+            <button class="preset-pill" id="presetSameDir">📁 元動画の場所</button>
+          </div>
+        </div>
+
+        <!-- GPU Acceleration Engine -->
+        <div class="control-box">
+          <div class="control-head">
+            <div class="head-title">
+              <span class="title-text">🚀 ハードウェア高速化エンジン</span>
+            </div>
+            <p class="head-desc">自動検知済みの最適GPUハードウェアエンコーダー</p>
+          </div>
+          <select id="selectEncoder" class="studio-select-pro">
             <option value="auto">自動選択 (最も高速なGPUエンジン)</option>
           </select>
         </div>
 
         <!-- Chunk Stability Mode -->
-        <div class="setting-group">
-          <label class="setting-title">
-            <span>🧠 チャンク分割サイズ (RAM枯渇防止)</span>
-            <span class="setting-help">動画を一定間隔に分割してメモリ消費を抑制</span>
-          </label>
-          <div class="radio-grid">
-            <label class="radio-card active">
-              <input type="radio" name="chunkSize" value="20" checked>
-              <div class="radio-body">
-                <span class="radio-name">20秒 (推奨バランス)</span>
-                <span class="radio-desc">最速＆高安定。長尺動画に最適</span>
-              </div>
-            </label>
-            <label class="radio-card">
-              <input type="radio" name="chunkSize" value="10">
-              <div class="radio-body">
-                <span class="radio-name">10秒 (超低負荷)</span>
-                <span class="radio-desc">メモリ消費を最小限に抑制</span>
-              </div>
-            </label>
-            <label class="radio-card">
-              <input type="radio" name="chunkSize" value="40">
-              <div class="radio-body">
-                <span class="radio-name">40秒 (大容量チャンク)</span>
-                <span class="radio-desc">高速GPU＆大容量RAM向け</span>
-              </div>
-            </label>
+        <div class="control-box">
+          <div class="control-head">
+            <div class="head-title">
+              <span class="title-text">🧠 チャンク分割サイズ (メモリ枯渇防止)</span>
+            </div>
+            <p class="head-desc">動画を一定秒数ごとに分割してRAM消費を抑制します</p>
+          </div>
+          <div class="segmented-pills">
+            <div class="seg-pill active" data-chunk="20">
+              <span class="p-name">20秒セグメント</span>
+              <span class="p-desc">推奨バランス</span>
+            </div>
+            <div class="seg-pill" data-chunk="10">
+              <span class="p-name">10秒セグメント</span>
+              <span class="p-desc">超低負荷</span>
+            </div>
+            <div class="seg-pill" data-chunk="40">
+              <span class="p-name">40秒セグメント</span>
+              <span class="p-desc">高速GPU向け</span>
+            </div>
           </div>
         </div>
 
         <!-- Audio Settings -->
-        <div class="setting-group">
-          <label class="setting-title">
-            <span>🎵 音声チャンネルの扱い</span>
-            <span class="setting-help">動画の反転に合わせたオーディオ処理</span>
-          </label>
-          <div class="radio-pill-group">
-            <label class="pill active">
-              <input type="radio" name="audioMode" value="reverse" checked>
-              <span>⏪ 音声も逆再生 (Reverse Audio)</span>
-            </label>
-            <label class="pill">
-              <input type="radio" name="audioMode" value="mute">
-              <span>🔇 音声をミュート (Mute)</span>
-            </label>
-            <label class="pill">
-              <input type="radio" name="audioMode" value="keep">
-              <span>⏩ 元の音声を順再生で保持</span>
-            </label>
+        <div class="control-box">
+          <div class="control-head">
+            <div class="head-title">
+              <span class="title-text">🎵 オーディオチャンネルの処理</span>
+            </div>
+          </div>
+          <div class="audio-pills">
+            <div class="audio-pill active" data-audio="reverse">
+              <span class="a-icon">⏪</span>
+              <div class="a-text">
+                <span class="a-name">音声を完全逆再生 (Reverse Audio)</span>
+                <span class="a-sub">逆再生された映像と正確に同期 (AAC 192kbps)</span>
+              </div>
+            </div>
+            <div class="audio-pill" data-audio="mute">
+              <span class="a-icon">🔇</span>
+              <div class="a-text">
+                <span class="a-name">音声をミュート (無音)</span>
+                <span class="a-sub">動画から音声トラックを削除して軽量化</span>
+              </div>
+            </div>
+            <div class="audio-pill" data-audio="keep">
+              <span class="a-icon">⏩</span>
+              <div class="a-text">
+                <span class="a-name">元の音声を順再生で保持</span>
+                <span class="a-sub">音楽や音声をそのままの向きで再生</span>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- Speed Multiplier -->
-        <div class="setting-group">
-          <label class="setting-title">
-            <span>⏩ 時間逆転速度 (スピード倍率)</span>
-            <span class="setting-help">逆再生時の再生速度を自在に変更可能</span>
-          </label>
-          <div class="speed-selector">
-            <button class="speed-btn" data-speed="0.5">0.5x (スロー)</button>
-            <button class="speed-btn active" data-speed="1.0">1.0x (標準)</button>
-            <button class="speed-btn" data-speed="2.0">2.0x (2倍速)</button>
-            <button class="speed-btn" data-speed="4.0">4.0x (4倍速)</button>
+        <div class="control-box">
+          <div class="control-head">
+            <div class="head-title">
+              <span class="title-text">⏩ 時間逆転速度 (スピード倍率)</span>
+            </div>
+          </div>
+          <div class="speed-grid">
+            <button class="speed-tile" data-speed="0.5">0.5x<br><small>スロー逆再生</small></button>
+            <button class="speed-tile active" data-speed="1.0">1.0x<br><small>標準逆再生</small></button>
+            <button class="speed-tile" data-speed="2.0">2.0x<br><small>2倍速逆再生</small></button>
+            <button class="speed-tile" data-speed="4.0">4.0x<br><small>4倍速ワープ</small></button>
           </div>
         </div>
 
         <!-- Quality Preset -->
-        <div class="setting-group">
-          <label class="setting-title">
-            <span>🎨 出力画質プリセット</span>
-          </label>
-          <div class="radio-pill-group">
-            <label class="pill">
-              <input type="radio" name="quality" value="ultra">
-              <span>💎 スタジオマスター (最高画質 14Mbps)</span>
-            </label>
-            <label class="pill active">
-              <input type="radio" name="quality" value="high" checked>
-              <span>⭐ 高画質 (推奨 8Mbps)</span>
-            </label>
-            <label class="pill">
-              <input type="radio" name="quality" value="draft">
-              <span>⚡ 高速ドラフト (4Mbps)</span>
-            </label>
+        <div class="control-box">
+          <div class="control-head">
+            <div class="head-title">
+              <span class="title-text">🎨 出力画質プリセット</span>
+            </div>
           </div>
-        </div>
-
-        <!-- Output Destination -->
-        <div class="setting-group">
-          <label class="setting-title">
-            <span>💾 保存先ファイル</span>
-          </label>
-          <div class="save-path-row">
-            <input type="text" id="inputOutputPath" class="studio-input" readonly placeholder="動画を選択すると自動決定されます">
-            <button class="btn-change-path" id="btnChangePath">変更</button>
+          <div class="quality-grid">
+            <button class="quality-tile" data-quality="ultra">💎 マスター品質<br><small>14 Mbps 超高画質</small></button>
+            <button class="quality-tile active" data-quality="high">⭐ 高画質 (推奨)<br><small>8 Mbps 最適バランス</small></button>
+            <button class="quality-tile" data-quality="draft">⚡ 高速ドラフト<br><small>4 Mbps 最速</small></button>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Bottom Mission Control Bar with Real-Time Progress -->
-  <footer class="mission-control">
-    <div class="progress-section" id="progressSection">
-      <div class="progress-header">
-        <div class="stage-info">
-          <span class="spinner" id="progressSpinner" style="display: none;"></span>
-          <span class="stage-text" id="stageText">動画を選択して「時間逆転を開始」を押してください</span>
+  <!-- Bottom Command Deck / Real-time Telemetry -->
+  <footer class="command-deck">
+    <div class="telemetry-dashboard">
+      <div class="dash-status-row">
+        <div class="dash-left">
+          <span class="pulse-indicator" id="pulseIndicator"></span>
+          <span class="dash-stage-text" id="stageText">動画を選択して「時間逆転を開始」を押してください</span>
         </div>
-        <div class="percent-container">
-          <span class="fps-live-badge" id="liveFpsBadge" style="display: none;">0 FPS</span>
-          <span class="percent-text" id="percentText">0%</span>
-        </div>
-      </div>
-
-      <!-- Dual Layer Progress Track -->
-      <div class="progress-track-wrapper">
-        <div class="progress-track">
-          <div class="progress-fill" id="progressFill" style="width: 0%;">
-            <div class="progress-glow"></div>
-          </div>
+        <div class="dash-right">
+          <span class="live-fps-chip" id="liveFpsBadge" style="display: none;">320 FPS</span>
+          <span class="dash-percent" id="percentText">0%</span>
         </div>
       </div>
 
-      <!-- Real-Time Telemetry Grid -->
-      <div class="metrics-grid">
-        <div class="metric-item">
-          <span class="metric-lbl">処理速度 / レンダリング</span>
-          <span class="metric-val text-cyan" id="metricSpeed">-</span>
+      <!-- Cyber Neon Progress Track -->
+      <div class="cyber-track">
+        <div class="cyber-fill" id="progressFill" style="width: 0%;">
+          <div class="cyber-sweep"></div>
         </div>
-        <div class="metric-item">
-          <span class="metric-lbl">処理フレーム数</span>
-          <span class="metric-val" id="metricFrames">0 / 0</span>
+      </div>
+
+      <!-- Real-time HUD Metrics -->
+      <div class="hud-metrics">
+        <div class="hud-item">
+          <span class="hud-lbl">処理速度</span>
+          <span class="hud-val text-cyan" id="metricSpeed">-</span>
         </div>
-        <div class="metric-item">
-          <span class="metric-lbl">経過時間 / 残り時間</span>
-          <span class="metric-val" id="metricTimes">00:00:00 / -</span>
+        <div class="hud-item">
+          <span class="hud-lbl">処理フレーム数</span>
+          <span class="hud-val" id="metricFrames">0 / 0</span>
         </div>
-        <div class="metric-item">
-          <span class="metric-lbl">メモリ消費 (RAM)</span>
-          <span class="metric-val text-green" id="metricRam">完全安定 (120 MB)</span>
+        <div class="hud-item">
+          <span class="hud-lbl">経過時間 / 推定残り時間</span>
+          <span class="hud-val" id="metricTimes">00:00:00 / -</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-lbl">RAMメモリ安定度</span>
+          <span class="hud-val text-green" id="metricRam">完全安定 (120 MB)</span>
         </div>
       </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-      <button class="btn-primary" id="btnStartReverse" disabled>
-        <span class="btn-icon">⏩</span>
-        <span class="btn-text">時間逆転を開始 (START REVERSE)</span>
+    <!-- Master Action Buttons -->
+    <div class="deck-actions">
+      <button class="btn-master-reverse" id="btnStartReverse" disabled>
+        <span class="btn-glow-border"></span>
+        <span class="master-icon">⏩</span>
+        <span class="master-text">時間逆転を開始 (INITIATE TIME REVERSAL)</span>
       </button>
-      <button class="btn-cancel" id="btnCancel" style="display: none;">
-        <span>⏹ 中止 (Cancel)</span>
+      <button class="btn-deck-cancel" id="btnCancel" style="display: none;">
+        <span>⏹ 中止 (Abort)</span>
       </button>
-      <button class="btn-open-folder" id="btnOpenFolder" style="display: none;">
-        <span>📁 保存先フォルダを開く</span>
+      <button class="btn-deck-open" id="btnOpenFolder" style="display: none;">
+        <span>📁 完成動画フォルダを開く</span>
       </button>
     </div>
   </footer>
 
   <!-- High-Load Warning Modal -->
-  <div class="modal-overlay" id="warningModal" style="display: none;">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-icon-alert">⚠️</div>
-        <div class="modal-title-box">
+  <div class="modal-backdrop" id="warningModal" style="display: none;">
+    <div class="warning-modal-box">
+      <div class="modal-banner">
+        <span class="modal-warn-icon">⚠️</span>
+        <div class="banner-text">
           <h3>高負荷並列ターボモードの警告</h3>
-          <span class="modal-subtitle">HIGH-LOAD MULTI-THREAD WARNING</span>
+          <span class="banner-sub">HIGH LOAD MULTI-THREAD WARNING</span>
         </div>
       </div>
-      <div class="modal-body">
-        <p class="modal-lead">
-          選択された<strong>「並列ターボモード (<span id="modalWorkerCount">4</span>スレッド並列)」</strong>は、高性能なGPUやマルチコアCPUを搭載したゲーミングPC・デスクトップPC向けの機能です。
+      <div class="modal-content">
+        <p class="modal-p">
+          選択された<strong>「並列ターボモード (<span id="modalWorkerCount">4</span>スレッド並列)」</strong>は、高性能なGPUやマルチコアCPUを搭載したゲーミングPC・デスクトップ向けの機能です。
         </p>
-        <div class="modal-alert-box">
-          <ul>
-            <li>🔥 <strong>CPU/GPU負荷の上昇</strong>: プロセッサ使用率が最大100%近くまで上昇し、冷却ファンの回転音や発熱が大きくなります。</li>
-            <li>⚡ <strong>消費電力の増加</strong>: ノートPCをお使いの場合は、必ずACアダプターを接続してください。</li>
-            <li>🧠 <strong>メモリ消費</strong>: 並列数に応じてメモリ（RAM）消費量が増加します（2並列: 約300MB、4並列: 約600MB）。</li>
-            <li>⚠️ 冷却環境が不十分な薄型ノートPCでは、熱によるサーマルスロットリング（保護のための減速）が起きる場合があります。</li>
-          </ul>
+        <div class="modal-box-alert">
+          <div class="alert-line">🔥 <strong>CPU/GPU使用率</strong>: 最大100%まで上昇し、ファン回転数と発熱が増加します。</div>
+          <div class="alert-line">⚡ <strong>電力消費</strong>: ノートPCをお使いの場合はACアダプターの接続が必須です。</div>
+          <div class="alert-line">🧠 <strong>メモリ使用量</strong>: 並列数に応じてRAM消費量が増加します（2並列: 約300MB、4並列: 約600MB）。</div>
+          <div class="alert-line">⚠️ 冷却環境が不十分な薄型ノートPCではサーマルスロットリング（保護減速）が起きる場合があります。</div>
         </div>
-        <label class="modal-agree-label">
+        <label class="agree-checkbox-label">
           <input type="checkbox" id="chkAgreeWarning">
           <span>上記のリスクと負荷を理解した上で、高負荷ターボモードを有効にする</span>
         </label>
       </div>
-      <div class="modal-actions">
-        <button class="btn-modal-cancel" id="btnModalCancel">キャンセル (安全モード維持)</button>
-        <button class="btn-modal-confirm" id="btnModalConfirm" disabled>高負荷モードを有効化</button>
+      <div class="modal-foot">
+        <button class="btn-warn-cancel" id="btnModalCancel">キャンセル (安全モード維持)</button>
+        <button class="btn-warn-confirm" id="btnModalConfirm" disabled>高負荷モードを有効化</button>
       </div>
     </div>
   </div>
