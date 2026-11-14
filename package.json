@@ -48,6 +48,12 @@
       "publisherDisplayName": "youyouboydragon",
       "applicationId": "TimeReversalStudioPro",
       "displayName": "時間逆転スタジオ - Time Reversal Studio Pro",
+      "minVersion": "10.0.17763.0",
+      "maxVersionTested": "10.0.22621.0",
+      "languages": [
+        "ja-JP",
+        "en-US"
+      ],
       "artifactName": "Time-Reversal-Studio-Pro-v${version}.msix"
     },
     "nsis": {
