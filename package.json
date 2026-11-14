@@ -37,9 +37,18 @@
     "win": {
       "target": [
         "portable",
-        "nsis"
+        "nsis",
+        "appx"
       ],
       "icon": "src/assets/icon.png"
+    },
+    "appx": {
+      "identityName": "youyouboydragon.-TimeReversalStudioPro",
+      "publisher": "CN=E2596E77-03B7-4122-95E4-67113798EA2C",
+      "publisherDisplayName": "youyouboydragon",
+      "applicationId": "TimeReversalStudioPro",
+      "displayName": "時間逆転スタジオ - Time Reversal Studio Pro",
+      "artifactName": "Time-Reversal-Studio-Pro-v${version}.msix"
     },
     "nsis": {
       "oneClick": false,
